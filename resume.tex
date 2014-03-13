@@ -227,13 +227,13 @@ Il est donc nécessaire de définir une nouvelle notion, introduite en même tem
 
 
 \section{Tetrys}
-\cite{onthefly} définit Tetrys, un mécanisme de transmission point-à-point robuste, permettant via du codage à la volée, de réduire le délai de récupération de paquets perdus. L'idée majeure est d'envoyer des paquets non codés, puis tous les $k$ paquets(la récupération est donc indépendante du RTT, à l'inverse de TCP/NC présenté section \ref{tcpnc}), on construit un paquet de redondance, en utilisant du RLNC sur le corps $\mathbb{F}(2^8)$, présenté section \ref{RLNC}, pour compenser les potentiels paquets perdus. En utilisant le concept de paquets vus, il suffit donc de recevoir autant de paquets de redondance que de paquets perdus pour les récupérer.
+\cite{onthefly} définit Tetrys, un mécanisme de transmission point-à-point robuste, permettant via du codage à la volée, de réduire le délai de récupération de paquets perdus. L'idée majeure est d'envoyer des paquets non codés, puis tous les $k$ paquets(la récupération est donc indépendante du RTT, à l'inverse de TCP/NC présenté section \ref{tcpnc}), on construit un paquet de redondance, en utilisant du RLNC sur le corps $\mathbb{F}(2^8)$, présenté section \ref{RLNC}, pour compenser les potentiels paquets perdus. En utilisant le concept de paquets vus, il suffit donc de recevoir autant de paquets de redondance que de paquets perdus pour les récupérer. Un échange de paquets présentant les différents mécanismes de Tetrys est présenté figure \ref{tetrys}
 
-\begin{figure}
+\begin{figure}[H]
   \centering
   \includegraphics[scale=0.5]{img/Tetrys.png}
   \caption{Echanges de paquets avec $k=2$}
-  \label{fig:sub3}
+  \label{tetrys}
 \end{figure}
 
 
@@ -267,6 +267,9 @@ Une amélioration potentielle de ce framework serait le contrôle de congestion.
 %Minimum rdundancy ratio estimatino to satisfy streaming application requirements
 %adapted to streaming
 
+
+
+\textbf{PAS FINI}
 
 \subsection{CoMP}
 multipath
