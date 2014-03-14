@@ -21,7 +21,6 @@
 
 \renewcommand{\footrulewidth}{0.5pt}
 
-
 \begin{document}
 \topmargin = 0.mm
 \headheight = 12.1638pt
@@ -61,11 +60,11 @@ Cette partie présente différentes solutions pour réparer les erreurs sur un c
 \subsection{ARQ : Automatic Repeat reQuest}
 \label{ARQ}
 C'est une méthode de contrôle d'erreur. En utilisant des acquittements, et des time-out, il s'agit de renvoyer des paquets non-acquittés au bout d'un certain temps.
-Ce mécanisme doit être de préférence utilisé au niveau 2 du modèle OSI, comme l'a montré \cite{llfeqarq}, qui permet de savoir plutôt rapidement comment le paquet a été perdu. Cela force une gestion \textbf{hop-by-hop} du paquet, s'avérant utile si des liens avec et sans pertes sont présents sur le chemin.
+Seul, ce mécanisme doit être de préférence utilisé au niveau 2 du modèle OSI, comme l'a montré \cite{llfeqarq}, qui permet de savoir plutôt rapidement comment le paquet a été perdu. Cela force une gestion \textbf{hop-by-hop} du paquet, s'avérant utile si des liens avec et sans pertes sont présents sur le chemin.
 Trois techniques d'ARQ sont utilisées, à savoir :
 \begin{description}
 \item[Stop and Wait :] Le plus simple. Ici, on se contente d'envoyer une paquet et d'attendre son acquittement. S'il n'est pas reçu par l'envoyeur (le paquet ou son acquittement ont été perdus) au bout d'un certain temps, il est automatiquement renvoyé. Voir Figure \ref{fig:sub1}.
-\item[Go Back N :] Même principe que le Stop and Wait avec la gestion d'une fenêtre d'emission. On envoie tous les paquets de la fenêtre d'emission de taille spécifiée. Si l'un deux n'est pas acquitté, on le renvoie lui ainsi que tous ceux d'après (qu'ils soient bien reçus la première fois ou pas). Voir Figure \ref{fig:sub2}.
+\item[Go Back N :] Même principe que le Stop and Wait avec la gestion d'une fenêtre d'emission. On envoie tous les paquets de la fenêtre d'emission de taille spécifiée. Si l'un deux n'est pas acquitté, on le renvoie lui ainsi que tous ceux d'après (qu'ils soient bien reçus la première fois ou pas). TCP utilise ce mécanisme particulièrement inneficace. Voir Figure \ref{fig:sub2}.
 \item[Selective Repeat :] Plus flexible que le Go Back N, le receveur accepte les paquets même s'il a rencontré une erreur sur un paquet précédent. A l'aide d'un NACK il informe l'expéditeur de la non-reception d'un paquet, qui sera alors retransmit une fois que tout ce qui se trovue dans la fenêtre d'emission aura été envoyé. Voir Figure \ref{fig:sub3}.
 \end{description}
 
@@ -143,13 +142,14 @@ Le tableau \ref{table:fecarq}, de \cite{feqarqtable} résume les différents asp
 
 Globalement, un système demandant une faible latence, ou n'ayant pas de mémoire ne pourra pas utiliser d'ARQ et donc devra utiliser du FEC. L'utilisation d'ARQ nécessite un canal de retour.
 
-Une solution efficace serait donc de mixer FEC et ARQ, notamment appelé H-ARQ (pour Hybrid-ARQ), combinant du FEC à de l'ARQ quand les pertes sont trop importantes pour être contrées par la redondance prévue par le FEC.
+\subsection{H-ARQ : Hybrid ARQ}
+Une solution efficace est de mixer FEC et ARQ, notamment appelé H-ARQ (pour Hybrid-ARQ), combinant du FEC à de l'ARQ quand les pertes sont trop importantes pour être contrées par la redondance prévue par le FEC.
 Il en existe deux formes :
-\begin{enumerate}
-\item Tous les messages sont envoyés avec FEC. Si le recepteur n'a pas assez d'information, il demande une retransmission via l'ARQ.
-\item Les messages sont envoyés en clair. Si une erreur est détectée, le recepteur utilise l'ARQ pour demander du FEC.
-\end{enumerate}
-L'H-ARQ obtient de meilleures performances que l'ARQ et que le FEC. Cependant, aux alentours des 5\% de pertes, les performances chutent.
+\begin{description}
+\item[Type 1 :] Tous les messages composants des blocs sont envoyés avec FEC. Si le recepteur n'a pas assez d'information pour reconstruire un bloc, il demande la retransmission du bloc entier via l'ARQ.
+\item[Type 2 :] Les messages sont envoyés en clair. Si une erreur est détectée, le recepteur utilise l'ARQ pour demander du code correcteur et éventuellement quelques bits de parités en plus.
+\end{description}
+L'H-ARQ, surtout de type 2, obtient de meilleures performances que l'ARQ et que le FEC. Ils sont bien souvent utilisés par des technologies comme Wimax mais peu répandues sur les couches supérieures
 
 
 \subsection{Divers changements à TCP}
